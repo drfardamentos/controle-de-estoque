@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de estoque</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+
+</head>
+<body>
+    <header>
+        <h1>Controle de Estoque</h1>
+        <p>Atualize as informações das quantidades de peças disponíveis</p>
+    </header>
+
+    <fieldset>
+        <legend>Data: </legend>
+        <input type="date" name="data" id="data">
+    </fieldset>
+
+    <fieldset>
+        <legend>Selecione o tecido: </legend>
+        <select id="tecidoSelect" onchange="updateQuantity()">
+            <option value="">Selecione uma opção</option>
+        </select>
+    </fieldset>
+    <br>
+
+    <fieldset>
+        <legend>Selecione a opção correspondente: </legend>
+        <div class="select-radio">
+            <input type="radio" name="entradasousaidas" id="entrada" value="entrada" >
+            <label for="entrada" class="radio-button">Entrada de tecido</label>
+            <input type="radio" name="entradasousaidas" id="saida" value="saida">
+            <label for="saida" class="radio-button">Saída de tecido</label>
+        </div>
+    </fieldset>
+    <br>
+
+    <fieldset>
+        <legend>Digite a quantidade: </legend>
+        <input type="number" id="adjustmentInput" min="1" class="custom-number-input" placeholder="quantidade">
+    </fieldset>
+    <br>
+    
+    <button onclick="adjustQuantity()">Atualizar Quantidade</button>
+
+    <p class="quantidade">Quantidade Atual: <input type="number" id="quantityInput" readonly class="custom-number-input"></p>
+
+    <script src="script.js">
+        
+    </script>
+</body>
+</html>
