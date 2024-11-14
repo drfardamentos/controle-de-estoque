@@ -3,6 +3,11 @@ header{
     text-align: center;
 }
 
+body{
+    background-image: linear-gradient(45deg, #cfef00, #9fb800);
+    
+}
+
 
 button {
     cursor: pointer;
@@ -10,7 +15,7 @@ button {
     transition: all 0.2s;
     padding: 20px 20px;
     border-radius: 100px;
-    background: #cfef00;
+    background: #e6ff46;
     border: 1px solid transparent;
     display: flex;
     align-items: center;
