@@ -9,8 +9,13 @@ if ('serviceWorker' in navigator) {
           });
   });
 }
-
-
+const dataPedidoo = new Date().toLocaleDateString('pt-BR', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit'
+});
+const data = document.getElementById('data');
+data.innerHTML = dataPedidoo
 
 
 const apiUrl = "https://sheetdb.io/api/v1/cf70b05w3x57x"; // Substitua SEU_API_ID pelo ID da API do SheetDB
@@ -104,9 +109,15 @@ async function updateQuantityInSheetDB(id, newQuantity) {
         const sheetDBUrl = 'https://sheetdb.io/api/v1/cf70b05w3x57x?sheet=Dados'; 
 
         function submitData() {
-          const data = document.getElementById('data').value;
+
           const tecido = document.getElementById('tecidoSelect').selectedOptions[0].text; // Obtenha o nome do tecido
           let quantidade = parseInt(document.getElementById('adjustmentInput').value);
+          const dataPedido = new Date().toLocaleDateString('pt-BR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          });
+          
       
           // Verifica se a saída foi selecionada
           const isSaida = document.getElementById("saida").checked;
@@ -115,14 +126,14 @@ async function updateQuantityInSheetDB(id, newQuantity) {
               quantidade = -Math.abs(quantidade); // Torna a quantidade negativa
           }
       
-          if (!data || !tecido || isNaN(quantidade)) {
+          if ( !tecido || isNaN(quantidade)) {
               alert('Por favor, preencha todos os campos.');
               return;
           }
       
           // Criar o objeto com os dados a serem enviados
           const entry = {
-              DATA: data,
+              DATA: dataPedido,
               TECIDO: tecido,
               QUANTIDADE: quantidade
           };
