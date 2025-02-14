@@ -57,6 +57,8 @@ const apiUrl = "https://sheetdb.io/api/v1/cf70b05w3x57x"; // Substitua SEU_API_I
           }
         }
 
+const loader = document.getElementById('loader')
+const result = document.getElementById('result')
 // Função para ajustar a quantidade com base na entrada ou saída
 function adjustQuantity() {
   const selectedId = document.getElementById("tecidoSelect").value;
@@ -64,11 +66,14 @@ function adjustQuantity() {
   const quantityInput = document.getElementById("quantityInput");
   const isEntrada = document.getElementById("entrada").checked;
   const isSaida = document.getElementById("saida").checked;
+  
 
   if (!selectedId || !adjustmentInput || (!isEntrada && !isSaida)) {
       alert("Por favor, selecione o tecido, a quantidade e o tipo de ajuste.");
       return;
   }
+
+  loader.style.display = 'block'
 
   // Calcula nova quantidade
   let newQuantity = itemData[selectedId].QUANTIDADE;
@@ -106,66 +111,75 @@ async function updateQuantityInSheetDB(id, newQuantity) {
 }
 
         
-        const sheetDBUrl = 'https://sheetdb.io/api/v1/cf70b05w3x57x?sheet=Dados'; 
+const sheetDBUrl = 'https://sheetdb.io/api/v1/cf70b05w3x57x?sheet=Dados'; 
 
-        function submitData() {
+function submitData() {
 
-          const tecido = document.getElementById('tecidoSelect').selectedOptions[0].text; // Obtenha o nome do tecido
-          let quantidade = parseInt(document.getElementById('adjustmentInput').value);
-          const dataPedido = new Date().toLocaleDateString('pt-BR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          });
+  const tecido = document.getElementById('tecidoSelect').selectedOptions[0].text; // Obtenha o nome do tecido
+  let quantidade = parseInt(document.getElementById('adjustmentInput').value);
+  const dataPedido = new Date().toLocaleDateString('pt-BR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  
+
+  // Verifica se a saída foi selecionada
+  const isSaida = document.getElementById("saida").checked;
+  
+
+  if (isSaida) {
+      quantidade = -Math.abs(quantidade); // Torna a quantidade negativa
+  }
+
+  if ( !tecido || isNaN(quantidade)) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+  }
+
+  // Criar o objeto com os dados a serem enviados
+  const entry = {
+      DATA: dataPedido,
+      TECIDO: tecido,
+      QUANTIDADE: quantidade
+  };
+
+  // Enviar os dados para o SheetDB
+  fetch(sheetDBUrl, {
+      method: 'POST', // Usar POST para enviar dados
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(entry) // Enviar como um objeto JSON
+  })
+  .then(response => {
+      if (response.ok) {
           
-      
-          // Verifica se a saída foi selecionada
-          const isSaida = document.getElementById("saida").checked;
-      
-          if (isSaida) {
-              quantidade = -Math.abs(quantidade); // Torna a quantidade negativa
-          }
-      
-          if ( !tecido || isNaN(quantidade)) {
-              alert('Por favor, preencha todos os campos.');
-              return;
-          }
-      
-          // Criar o objeto com os dados a serem enviados
-          const entry = {
-              DATA: dataPedido,
-              TECIDO: tecido,
-              QUANTIDADE: quantidade
-          };
-      
-          // Enviar os dados para o SheetDB
-          fetch(sheetDBUrl, {
-              method: 'POST', // Usar POST para enviar dados
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(entry) // Enviar como um objeto JSON
-          })
-          .then(response => {
-              if (response.ok) {
-                  alert('Dados enviados com sucesso!');
-                  // Limpar os campos
-                  document.getElementById('data').value = '';
-                  document.getElementById('tecidoSelect').value = '';
-                  document.getElementById('adjustmentInput').value = '';
-              } else {
-                  alert('Erro ao enviar os dados. Código de status: ' + response.status);
-              }
-          })
-          .catch(error => {
-              console.error('Erro:', error);
-              alert('Erro ao enviar os dados.');
-          });
-      }
-      
-      
-        
-        
+        loader.style.display = 'none'
+        result.style.display = 'block'
 
-        // Carrega os dados ao carregar a página
-        document.addEventListener("DOMContentLoaded", loadSheetDBData);
+        setInterval(()=>{
+          result.style.display = 'none'
+        }, 2000)
+
+          
+          // Limpar os campos
+          document.getElementById('data').value = '';
+          document.getElementById('tecidoSelect').value = '';
+          document.getElementById('adjustmentInput').value = '';
+      } else {
+          alert('Erro ao enviar os dados. Código de status: ' + response.status);
+      }
+  })
+  .catch(error => {
+      console.error('Erro:', error);
+      alert('Erro ao enviar os dados.');
+  });
+}
+  
+  
+    
+    
+
+    // Carrega os dados ao carregar a página
+    document.addEventListener("DOMContentLoaded", loadSheetDBData);
