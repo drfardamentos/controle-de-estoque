@@ -257,7 +257,7 @@ async function verificarEstoque() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        to: 'cleiussonalves1011@gmail.com',
+        to: 'fardamentosdr@gmail.com',
         subject: 'Relatório de Estoque - Itens com Baixa Quantidade',
         html: emailBody,  // Usar HTML para o corpo do e-mail
       })
